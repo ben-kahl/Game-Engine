@@ -10,6 +10,13 @@ Level::Level(LTexture* levelTexture)
 	mLevelTexture = levelTexture;
 }
 
+Level::Level()
+{
+	mLevW = 0;
+	mLevH = 0;
+	mLevelTexture = nullptr;
+}
+
 Level::~Level()
 {
 	mLevW = 0;

@@ -154,6 +154,11 @@ void Character::render()
 	mCharaTexture->render(mPosX, mPosY);
 }
 
+void Character::render(int x, int y)
+{
+	mCharaTexture->render(x, y);
+}
+
 void Character::render(Uint8 r, Uint8 g, Uint8 b)
 {
 	mCharaTexture->setColor(r, g, b);

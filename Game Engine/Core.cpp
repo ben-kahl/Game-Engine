@@ -497,30 +497,30 @@ bool loadMedia()
 		printf("Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
 	}
-	
+
 	if (!gTitleBackgroundTexture.loadFromFile("Textures/holyfuckthatssick.jpg"))
 	{
 		std::cout << "Failed to load title background texture!\n";
 		success = false;
 	}
 
-	if (!gBackgroundTexture.loadFromFile("Textures/holyfuckthatssick.jpg"/*"Textures/characterSelectBackground.png"*/))
+	if (!gStageBackgroundTexture.loadFromFile("Textures/stage1Background.png"/*"Textures/characterSelectBackground.png"*/))
 	{
 		std::cout << "Failed to load character select background texture!\n";
 		success = false;
 	}
 
-	//if (!gBackgroundTexture[2].loadFromFile("Textures/canvas.png"/*"Textures/stageSelectbackground.png"*/))
-	//{
-	//	std::cout << "Failed to load stage select background texture!\n";
-	//	success = false;
-	//}
+	if (!gStageSelBackgroundTexture.loadFromFile("Textures/canvas.png"/*"Textures/stageSelectbackground.png"*/))
+	{
+		std::cout << "Failed to load stage select background texture!\n";
+		success = false;
+	}
 
-	//if (!gBackgroundTexture[3].loadFromFile("Textures/stage1Background.png"))
-	//{
-	//	std::cout << "Failed to load stage 1 background texture!\n";
-	//	success = false;
-	//}
+	if (!gCharaSelBackgroundTexture.loadFromFile("Textures/gillboyle.jpg"))
+	{
+		std::cout << "Failed to load character select background texture!\n";
+		success = false;
+	}
 	if (!gCharacterTexture.loadFromFile("Textures/gillboyle.jpg"))
 	{
 		std::cout << "Failed to load character texture!\n";
@@ -554,10 +554,65 @@ void close()
 	SDL_Quit();
 }
 
-
-void updateGameState(GameState& gameState)
+void update(Character* p1, Character* p2, SDL_Rect* camera, Level* currentLevel)
 {
-	gGameState = gameState;
+
+	//Clear screen
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderClear(gRenderer);
+
+	switch (gGameState)
+	{
+	case GameState::Title:
+		//Render background
+		currentLevel->render();
+		//gTitleBackgroundTexture.render(0, 0);
+		break;
+	case GameState::CharacterSelect:
+		currentLevel->render();
+		//gCharaSelBackgroundTexture.render(0, 0);
+		break;
+	case GameState::StageSelect:
+		//gStageSelBackgroundTexture.render(0, 0);
+		currentLevel->render();
+		break;
+	case GameState::Fight:
+		//Character stuff
+		p1->move(p2->getColliders());
+		//update character camera
+		camera->x = (p1->getPosX() + p1->CHARA_WIDTH / 2) - SCREEN_WIDTH / 2;
+		camera->y = (p1->getPosY() + p1->CHARA_HEIGHT / 2) - SCREEN_HEIGHT / 2;
+
+		//Keep camera over level
+		if (camera->x < 0)
+		{
+			camera->x = 0;
+		}
+		if (camera->y < 0)
+		{
+			camera->y = 0;
+		}
+		if (camera->x > currentLevel->getLevW() - camera->w)
+		{
+			camera->x = currentLevel->getLevW() - camera->w;
+		}
+		if (camera->y > currentLevel->getLevH() - camera->h)
+		{
+			camera->y = currentLevel->getLevH() - camera->h;
+		}
+		//Render background
+		currentLevel->render(camera);
+		//Render dots
+		p1->render();
+		p2->render();
+		break;
+	}
+
+
+	//Render fps info in bottom left
+	gFPSTextTexture.render(0, 1050);
+	//Update screen
+	SDL_RenderPresent(gRenderer);
 }
 
 int main(int argc, char* args[])
@@ -594,20 +649,23 @@ int main(int argc, char* args[])
 			//Start counting frames per second
 			int countedFrames = 0;
 			fpsTimer.start();
-
+			float avgFPS = 0;
+			int frameTicks = 0;
 			//Render camera
-			SDL_Rect camera = {0,0, SCREEN_WIDTH, SCREEN_HEIGHT };
+			SDL_Rect camera = { 0,0, SCREEN_WIDTH, SCREEN_HEIGHT };
 			//Test characters
-			Character test(LEVEL_WIDTH/2, SCREEN_HEIGHT/1.4, &gCharacterCollisionTestTexture);
+			Character test(0, 0,/*LEVEL_WIDTH / 2, SCREEN_HEIGHT / 1.4,*/ &gCharacterCollisionTestTexture);
 			Character collisionTest(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, &gCharacterCollisionTestTexture);
 			//Initialize Levels
 			Level title(&gTitleBackgroundTexture);
 			Level characterSelect(&gCharaSelBackgroundTexture);
 			Level stageSelect(&gStageSelBackgroundTexture);
 			Level stage(&gStageBackgroundTexture);
+			Level* currentLevel = &title;
 			//While application is running
 			while (!quit)
 			{
+				//Do processes while not minimized
 				if (!gWindow.isMinimized())
 				{
 					capTimer.start();
@@ -619,13 +677,31 @@ int main(int argc, char* args[])
 						{
 							quit = true;
 						}
+						if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+						{
+							switch (e.key.keysym.sym)
+							{
+							case SDLK_LEFT: gGameState = GameState::Title;
+								currentLevel = &title;
+								break;
+							case SDLK_RIGHT: gGameState = GameState::Fight;
+								currentLevel = &stage;
+								break;
+							case SDLK_UP: gGameState = GameState::StageSelect;
+								currentLevel = &stageSelect;
+								break;
+							case SDLK_DOWN: gGameState = GameState::CharacterSelect;
+								currentLevel = &characterSelect;
+								break;
+							}
+						}
 						//handle character input
 						test.handleEvent(e);
 						//handle window events (dont really need this atm)
 						gWindow.handleEvent(e);
 					}
 					//Calculate and correct fps
-					float avgFPS = countedFrames / (fpsTimer.getTicks() / 1000.f);
+					avgFPS = countedFrames / (fpsTimer.getTicks() / 1000.f);
 					if (avgFPS > 2000000)
 					{
 						avgFPS = 0;
@@ -640,48 +716,11 @@ int main(int argc, char* args[])
 					{
 						printf("Unable to render FPS texture!\n");
 					}
-
-					//Character stuff
-					test.move(collisionTest.getColliders());
-					//update character camera
-					camera.x = (test.getPosX() + test.CHARA_WIDTH / 2) - SCREEN_WIDTH / 2;
-					camera.y = (test.getPosY() + test.CHARA_HEIGHT / 2) - SCREEN_HEIGHT / 2;
-
-					//Keep camera over level
-					if (camera.x < 0)
-					{
-						camera.x = 0;
-					}
-					if (camera.y < 0)
-					{
-						camera.y = 0;
-					}
-					if (camera.x > LEVEL_WIDTH - camera.w)
-					{
-						camera.x = LEVEL_WIDTH - camera.w;
-					}
-					if (camera.y > LEVEL_HEIGHT - camera.h)
-					{
-						camera.y = LEVEL_HEIGHT - camera.h;
-					}
-					//Clear screen
-					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-					SDL_RenderClear(gRenderer);
-
-					//Render textures
-					//Render background
-					
-					title.render(&camera);
-					
-					//Render dots
-					test.render(128, 128, 128);
-					collisionTest.render();
-					//Render fps info in bottom left
-					gFPSTextTexture.render(0, 1050);
-					//Update screen
-					SDL_RenderPresent(gRenderer);
+					//Update and render objects
+					update(&test, &collisionTest, &camera, currentLevel);
 					countedFrames++;
-					int frameTicks = capTimer.getTicks();
+					frameTicks = capTimer.getTicks();
+					//vsync delay
 					if (frameTicks < SCREEN_TICKS_PER_FRAME)
 					{
 						SDL_Delay(SCREEN_TICKS_PER_FRAME - frameTicks);

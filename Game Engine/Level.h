@@ -9,6 +9,7 @@ class Level
 public:
 	//Constructor and Destructor
 	Level(LTexture* levelTexture);
+	Level();
 	~Level();
 	
 	//Render Level at (0,0)
