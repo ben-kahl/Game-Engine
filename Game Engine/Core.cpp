@@ -8,6 +8,7 @@
 #include "Texture.h"
 #include "Window.h"
 #include "Timer.h"
+#include "Button.h"
 
 enum GameState
 {
@@ -38,6 +39,7 @@ LTexture gStageSelBackgroundTexture;
 LTexture gStageBackgroundTexture;
 LTexture gCharacterTexture;
 LTexture gCharacterCollisionTestTexture;
+LTexture gButtonTexture; //Todo: move away from global textures. This is gross.
 
 //Global gamestate
 GameState gGameState = GameState::Title;
@@ -148,6 +150,11 @@ bool loadMedia()
 		std::cout << "Failed to load dot texture! \n";
 		success = false;
 	}
+	if (!gButtonTexture.loadFromFile("Textures/button.png"))
+	{
+		std::cout << "Failed to load button texture! \n";
+		success = false;
+	}
 	return success;
 }
 
@@ -171,7 +178,7 @@ void close()
 	SDL_Quit();
 }
 
-void update(Character* p1, Character* p2, SDL_Rect* camera, Level* currentLevel)
+void update(Character* p1, Character* p2, SDL_Rect* camera, Level* currentLevel, Button* testButton)
 {
 
 	//Clear screen
@@ -183,6 +190,7 @@ void update(Character* p1, Character* p2, SDL_Rect* camera, Level* currentLevel)
 	case GameState::Title:
 		//Render background
 		currentLevel->render();
+		testButton->render();
 		//gTitleBackgroundTexture.render(0, 0);
 		break;
 	case GameState::CharacterSelect:
@@ -270,15 +278,23 @@ int main(int argc, char* args[])
 			int frameTicks = 0;
 			//Render camera
 			SDL_Rect camera = { 0,0, SCREEN_WIDTH, SCREEN_HEIGHT };
-			//Test characters
-			Character test(0, 0,/*LEVEL_WIDTH / 2, SCREEN_HEIGHT / 1.4,*/ &gCharacterCollisionTestTexture);
-			Character collisionTest(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, &gCharacterCollisionTestTexture);
+			
 			//Initialize Levels
 			Level title(&gTitleBackgroundTexture);
 			Level characterSelect(&gCharaSelBackgroundTexture);
 			Level stageSelect(&gStageSelBackgroundTexture);
 			Level stage(&gStageBackgroundTexture);
 			Level* currentLevel = &title;
+
+			//initialize spreadsheets
+			SpriteSheet p1(&gCharacterCollisionTestTexture, 1, 1);
+			SpriteSheet button(&gButtonTexture, 4, 1);
+
+			//Test characters
+			Character test(currentLevel->getLevW()/ 2, SCREEN_HEIGHT / 1.4, &p1);
+			Character collisionTest(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, &p1);
+			//Test button
+			Button testButton(SCREEN_WIDTH/ 1.5, SCREEN_HEIGHT / 2, &button);
 			//While application is running
 			while (!quit)
 			{
@@ -314,6 +330,8 @@ int main(int argc, char* args[])
 						}
 						//handle character input
 						test.handleEvent(e);
+						//Handle button
+						testButton.handleEvent(e);
 						//handle window events (dont really need this atm)
 						gWindow.handleEvent(e);
 					}
@@ -334,7 +352,7 @@ int main(int argc, char* args[])
 						printf("Unable to render FPS texture!\n");
 					}
 					//Update and render objects
-					update(&test, &collisionTest, &camera, currentLevel);
+					update(&test, &collisionTest, &camera, currentLevel, &testButton);
 					countedFrames++;
 					frameTicks = capTimer.getTicks();
 					//vsync delay

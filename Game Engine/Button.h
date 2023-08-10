@@ -1,19 +1,12 @@
 #ifndef BUTTON_H
 #define BUTTON_H
-#include "Texture.h"
-
-enum ButtonSprite
-{
-	BUTTON_SPRITE_DEFAULT = 0,
-	BUTTON_SPRITE_HOVER = 1,
-	BUTTON_SPRITE_CLICK = 2
-};
+#include "SpriteSheet.h"
 
 class Button
 {
 public:
 	Button();
-	Button(int x, int y, LTexture* buttonTexture);
+	Button(int x, int y, SpriteSheet* buttonSpriteSheet);
 	//Handle mouse/controller events
 	void handleEvent(SDL_Event& e);
 	//Position Setter
@@ -30,11 +23,7 @@ private:
 	int mButtonH;
 	//Button position
 	SDL_Point mPosition;
-	//Button sprite
-	ButtonSprite mCurrentSprite;
-	//Button sprite clip
-	SDL_Rect* mButtonSpriteClips;
-	//Button Texture
-	LTexture* mButtonTexture;
+	//Spritesheet
+	SpriteSheet* mButtonSpriteSheet;
 };
 #endif // !BUTTON_H

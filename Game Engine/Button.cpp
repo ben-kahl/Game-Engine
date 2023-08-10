@@ -6,22 +6,18 @@ Button::Button()
 {
 	mButtonW = 0;
 	mButtonH = 0;
-	mButtonTexture = nullptr;
+	mButtonSpriteSheet = nullptr;
 	mPosition.x = 0;
 	mPosition.y = 0;
-	mCurrentSprite = BUTTON_SPRITE_DEFAULT;
-	mButtonSpriteClips = new SDL_Rect[3];
 }
 
-Button::Button(int x, int y, LTexture* buttonTexture)
+Button::Button(int x, int y, SpriteSheet* buttonSpriteSheet)
 {
-	mButtonW = buttonTexture->getWidth();
-	mButtonH = buttonTexture->getHeight();
-	mButtonTexture = buttonTexture;
+	mButtonW = buttonSpriteSheet->getWidth();
+	mButtonH = buttonSpriteSheet->getHeight();
+	mButtonSpriteSheet = buttonSpriteSheet;
 	mPosition.x = x;
 	mPosition.y = y;
-	mCurrentSprite = BUTTON_SPRITE_DEFAULT;
-	mButtonSpriteClips = new SDL_Rect[3];
 }
 
 void Button::handleEvent(SDL_Event& e)
@@ -55,7 +51,7 @@ void Button::handleEvent(SDL_Event& e)
 		//Mouse is outside button
 		if (!inside)
 		{
-			mCurrentSprite = BUTTON_SPRITE_DEFAULT;
+			mButtonSpriteSheet->select_sprite(0,0);
 		}
 		//Mouse is inside button
 		else
@@ -64,15 +60,15 @@ void Button::handleEvent(SDL_Event& e)
 			switch (e.type)
 			{
 			case SDL_MOUSEMOTION:
-				mCurrentSprite = BUTTON_SPRITE_HOVER;
+				mButtonSpriteSheet->select_sprite(0, 1);
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
-				mCurrentSprite = BUTTON_SPRITE_CLICK;
+				mButtonSpriteSheet->select_sprite(0, 2);
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-				mCurrentSprite = BUTTON_SPRITE_DEFAULT;
+				mButtonSpriteSheet->select_sprite(0, 0);
 				break;
 			}
 		}
@@ -87,7 +83,7 @@ void Button::setPosition(int x, int y)
 
 void Button::render()
 {
-	mButtonTexture->render(mPosition.x, mPosition.y, &mButtonSpriteClips[mCurrentSprite]);
+	mButtonSpriteSheet->render(mPosition.x, mPosition.y);
 }
 
 int Button::getW()

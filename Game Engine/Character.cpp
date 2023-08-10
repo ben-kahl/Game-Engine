@@ -2,10 +2,10 @@
 #define CHARACTER_CPP
 #include "Character.h"
 
-Character::Character(int x, int y, LTexture* charaTexture)
+Character::Character(int x, int y, SpriteSheet* charaSpriteSheet)
 {
-	CHARA_WIDTH = charaTexture->getWidth();
-	CHARA_HEIGHT = charaTexture->getHeight();
+	CHARA_WIDTH = charaSpriteSheet->getWidth();
+	CHARA_HEIGHT = charaSpriteSheet->getHeight();
 	mPosX = x;
 	mPosY = y;
 	//initialize with one collision box, set to the dimensions of the character
@@ -15,7 +15,7 @@ Character::Character(int x, int y, LTexture* charaTexture)
 	shiftColliders();
 
 	//Set Character Texture
-	mCharaTexture = charaTexture;
+	mCharaSpriteSheet = charaSpriteSheet;
 }
 
 void Character::handleEvent(SDL_Event& e)
@@ -149,18 +149,12 @@ int Character::getPosY()
 void Character::render()
 {
 	//Show the character
-	mCharaTexture->render(mPosX, mPosY);
+	mCharaSpriteSheet->render(mPosX, mPosY);
 }
 
 void Character::render(int x, int y)
 {
-	mCharaTexture->render(x, y);
-}
-
-void Character::render(Uint8 r, Uint8 g, Uint8 b)
-{
-	mCharaTexture->setColor(r, g, b);
-	mCharaTexture->render(mPosX, mPosY);
+	mCharaSpriteSheet->render(x, y);
 }
 
 #endif // !CHARACTER_CPP

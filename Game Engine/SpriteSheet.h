@@ -10,6 +10,8 @@ public:
 	~SpriteSheet();
 	void select_sprite(int x, int y);
 	void render(int x, int y);
+	int getWidth();
+	int getHeight();
 private:
 	LTexture* mSpriteSheet;
 	SDL_Rect mClip; 
