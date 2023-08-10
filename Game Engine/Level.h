@@ -1,8 +1,8 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
-#include <SDL.h>
 #include "Core.h"
+#include "Texture.h"
 
 class Level
 {

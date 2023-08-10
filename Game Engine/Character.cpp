@@ -2,8 +2,6 @@
 #define CHARACTER_CPP
 #include "Character.h"
 
-
-
 Character::Character(int x, int y, LTexture* charaTexture)
 {
 	CHARA_WIDTH = charaTexture->getWidth();

@@ -1,10 +1,8 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-
-#include <SDL.h>
-#include <vector>
 #include "Core.h"
+#include "Texture.h"
 
 class Character
 {

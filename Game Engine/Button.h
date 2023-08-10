@@ -1,7 +1,6 @@
 #ifndef BUTTON_H
 #define BUTTON_H
-#include <SDL.h>
-#include "Core.h"
+#include "Texture.h"
 
 enum ButtonSprite
 {
@@ -14,8 +13,9 @@ class Button
 {
 public:
 	Button();
+	Button(int x, int y, LTexture* buttonTexture);
 	//Handle mouse/controller events
-	void handleEvent(SDL_Event* e);
+	void handleEvent(SDL_Event& e);
 	//Position Setter
 	void setPosition(int x, int y);
 	//Render
