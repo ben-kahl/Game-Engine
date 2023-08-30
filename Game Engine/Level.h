@@ -1,7 +1,5 @@
 #ifndef LEVEL_H
 #define LEVEL_H
-
-#include "Core.h"
 #include "Texture.h"
 
 class Level
@@ -12,6 +10,9 @@ public:
 	Level();
 	~Level();
 	
+	//Initialize
+	bool init(LTexture* levelTexture);
+
 	//Render Level at (0,0)
 	void render();
 	//Render level based on camera

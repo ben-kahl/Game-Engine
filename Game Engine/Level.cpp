@@ -21,7 +21,19 @@ Level::~Level()
 {
 	mLevW = 0;
 	mLevH = 0;
-	mLevelTexture->free();
+	//mLevelTexture->free();
+}
+
+bool Level::init(LTexture* levelTexture)
+{
+	if (levelTexture == nullptr)
+	{
+		return false;
+	}
+	mLevW = levelTexture->getWidth();
+	mLevH = levelTexture->getHeight();
+	mLevelTexture = levelTexture;
+	return true;
 }
 
 int Level::getLevW()
@@ -41,6 +53,6 @@ void Level::render()
 
 void Level::render(SDL_Rect* camera)
 {
-	mLevelTexture->render(camera->x, camera->y);
+	mLevelTexture->render(0, 0, camera);
 }
 #endif // !LEVEL_CPP"

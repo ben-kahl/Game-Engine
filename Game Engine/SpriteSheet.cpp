@@ -2,18 +2,26 @@
 #define SPRITESHEET_CPP
 #include "SpriteSheet.h"
 
-SpriteSheet::SpriteSheet(LTexture* spriteSheet, int row, int column)
+SpriteSheet::SpriteSheet(LTexture spriteSheet, int row, int column)
 {
 	mSpriteSheet = spriteSheet;
-	mClip.w = mSpriteSheet->getWidth() / column;
-	mClip.h = mSpriteSheet->getHeight() / row;
+	mClip.w = mSpriteSheet.getWidth() / column;
+	mClip.h = mSpriteSheet.getHeight() / row;
 	mClip.x = 0;
 	mClip.y = 0;
 }
 
+SpriteSheet::SpriteSheet()
+{
+	mClip.w = 0;
+	mClip.h = 0;
+	mClip.x = 0;
+	mClip.y = 0;	
+}
+
 SpriteSheet::~SpriteSheet()
 {
-	mSpriteSheet->free();
+	//mSpriteSheet.free();
 }
 
 void SpriteSheet::select_sprite(int x, int y)
@@ -24,7 +32,7 @@ void SpriteSheet::select_sprite(int x, int y)
 
 void SpriteSheet::render(int x, int y)
 {
-	mSpriteSheet->render(x, y, &mClip);
+	mSpriteSheet.render(x, y, &mClip);
 }
 
 int SpriteSheet::getWidth()

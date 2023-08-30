@@ -18,6 +18,39 @@ Character::Character(int x, int y, SpriteSheet* charaSpriteSheet)
 	mCharaSpriteSheet = charaSpriteSheet;
 }
 
+Character::Character()
+{
+	CHARA_WIDTH = 0;
+	CHARA_HEIGHT = 0;
+	mPosX = 0;
+	mPosY = 0;
+	//initialize with one collision box, set to the dimensions of the character
+	mColliders.resize(1);
+	mColliders[0].w = CHARA_WIDTH;
+	mColliders[0].h = CHARA_HEIGHT;
+	shiftColliders();
+
+	//Set Character Texture
+	mCharaSpriteSheet = nullptr;
+	
+}
+
+Character::~Character()
+{
+	CHARA_WIDTH = 0;
+	CHARA_HEIGHT = 0;
+	mPosX = 0;
+	mPosY = 0;
+	//initialize with one collision box, set to the dimensions of the character
+	mColliders.resize(1);
+	mColliders[0].w = CHARA_WIDTH;
+	mColliders[0].h = CHARA_HEIGHT;
+	shiftColliders();
+
+	//Set Character Texture
+	mCharaSpriteSheet = nullptr;
+}
+
 void Character::handleEvent(SDL_Event& e)
 {
 	if (e.type == SDL_KEYDOWN && e.key.repeat == 0)

@@ -5,7 +5,7 @@
 LTexture::LTexture()
 {
 	//Initialize
-	mTexture = NULL;
+	mTexture = nullptr;
 	mWidth = 0;
 	mHeight = 0;
 }
@@ -13,7 +13,7 @@ LTexture::LTexture()
 LTexture::~LTexture()
 {
 	//Deallocate
-	free();
+	//free();
 }
 
 bool LTexture::loadFromFile(std::string path)
@@ -22,7 +22,7 @@ bool LTexture::loadFromFile(std::string path)
 	free();
 
 	//The final texture
-	SDL_Texture* newTexture = NULL;
+	SDL_Texture* newTexture = nullptr;
 
 	//Load image at specified path
 	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
@@ -54,22 +54,22 @@ bool LTexture::loadFromFile(std::string path)
 
 	//Return success
 	mTexture = newTexture;
-	return mTexture != NULL;
+	return mTexture != nullptr;
 }
 
 #if defined(SDL_TTF_MAJOR_VERSION)
-bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor)
+bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font)
 {
 	//Get rid of preexisting texture
 	free();
 
 	//Render text surface
-	SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);
-	if (textSurface != NULL)
+	SDL_Surface* textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);
+	if (textSurface != nullptr)
 	{
 		//Create texture from surface pixels
 		mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
-		if (mTexture == NULL)
+		if (mTexture == nullptr)
 		{
 			std::cout << "Unable to create texture from rendered text! SDL Error: %s\n" << SDL_GetError();
 		}
@@ -90,17 +90,17 @@ bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor
 
 
 	//Return success
-	return mTexture != NULL;
+	return mTexture != nullptr;
 }
 #endif
 
 void LTexture::free()
-{
+{	
 	//Free texture if it exists
-	if (mTexture != NULL)
+	if (mTexture != nullptr)
 	{
 		SDL_DestroyTexture(mTexture);
-		mTexture = NULL;
+		mTexture = nullptr;
 		mWidth = 0;
 		mHeight = 0;
 	}

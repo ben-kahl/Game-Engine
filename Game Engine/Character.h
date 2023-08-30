@@ -1,7 +1,8 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-#include "Core.h"
+#include <SDL.h>
+#include <vector>
 #include "SpriteSheet.h"
 
 class Character
@@ -15,7 +16,8 @@ public:
 
 	//Constructor
 	Character(int x, int y, SpriteSheet* charaSpriteSheet);
-
+	Character();
+	~Character();
 	//Process key presses
 	void handleEvent(SDL_Event& e);
 

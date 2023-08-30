@@ -2,7 +2,7 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include "Core.h"
+#include "Application.h"
 
 //Texture wrapper class
 class LTexture
@@ -18,7 +18,7 @@ public:
 
 #if defined(SDL_TTF_MAJOR_VERSION)
 	//Creates image from font string
-	bool loadFromRenderedText(std::string textureText, SDL_Color textColor);
+	bool loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font);
 #endif
 
 	//Deallocates texture

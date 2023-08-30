@@ -1,7 +1,13 @@
-#ifndef WINDOW_CPP
-#define WINDOW_CPP
+#ifndef APPLICATION_CPP
+#define APPLICATION_CPP
 
-#include "Window.h"
+#include "Application.h"
+
+//Definitions
+
+app application;
+
+SDL_Renderer* gRenderer;
 
 LWindow::LWindow()
 {
@@ -148,4 +154,85 @@ void LWindow::free()
 	mWindow = nullptr;
 }
 
-#endif // !WINDOW_CPP
+bool init()
+{
+	//Initialization flag
+	bool success = true;
+
+	//Initialize SDL
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
+		success = false;
+	}
+	else
+	{
+		//Set texture filtering to linear
+		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
+		{
+			printf("Warning: Linear texture filtering not enabled!");
+		}
+
+		//Create window
+		if (!(application.win.init()))
+		{
+			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
+			success = false;
+		}
+		else
+		{
+			//Create vsynced renderer for window
+			gRenderer = application.win.createRenderer();
+			if (gRenderer == nullptr)
+			{
+				printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
+				success = false;
+			}
+			else
+			{
+				//Initialize renderer color
+				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+				//Initialize PNG loading
+				int imgFlags = IMG_INIT_PNG;
+				if (!(IMG_Init(imgFlags) & imgFlags))
+				{
+					printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+					success = false;
+				}
+
+				//Initialize SDL_ttf
+				if (TTF_Init() == -1)
+				{
+					printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+					success = false;
+				}
+			}
+		}
+	}
+	return success;
+}
+
+void close()
+{
+	//Free loaded images
+	//gFPSTextTexture.free();
+
+	//Free global font
+	//TTF_CloseFont(gFont);
+	//gFont = nullptr;
+
+	//Destroy window	
+	SDL_DestroyRenderer(gRenderer);
+	application.win.free();
+	gRenderer = nullptr;
+
+	//Quit SDL subsystems
+	TTF_Quit();
+	IMG_Quit();
+	SDL_Quit();
+}
+
+
+
+#endif // !APPLICATION_CPP
