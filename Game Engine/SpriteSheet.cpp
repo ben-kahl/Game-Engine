@@ -35,6 +35,11 @@ void SpriteSheet::render(int x, int y)
 	mSpriteSheet.render(x, y, &mClip);
 }
 
+void SpriteSheet::render(int x, int y, SDL_Rect* scalar)
+{
+	mSpriteSheet.renderScaled(x, y, &mClip, scalar);
+}
+
 int SpriteSheet::getWidth()
 {
 	return mClip.w;

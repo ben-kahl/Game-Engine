@@ -21,7 +21,7 @@ SDL_Event e;
 
 SDL_Color textColor;
 
-Level* currentLevel;
+SDL_Rect scalar;
 
 void initGame()
 {
@@ -39,6 +39,7 @@ void initGame()
 	//Render camera
 	camera = { 0,0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	application.gameState = GameState::Title;
+	scalar = { 0, 0, 20, 20 };
 }
 
 void update(AssetManager* assets)
@@ -91,11 +92,11 @@ void update(AssetManager* assets)
 		//Render background
 		assets->levels[Fight].render(&camera);
 		//Render dots
-		assets->characters[0].render();
+		assets->characters[0].render(&scalar);
 		assets->characters[1].render();
 		break;
 	}
-	
+
 	//Render text
 	if (!assets->fontTexture.loadFromRenderedText(timeText.str().c_str(), textColor, assets->font))
 	{
@@ -132,6 +133,14 @@ void gameLoop(AssetManager* assets)
 			case SDLK_UP: application.gameState = GameState::StageSelect;
 				break;
 			case SDLK_DOWN: application.gameState = GameState::CharacterSelect;
+				break;
+			case SDLK_o:
+				scalar.w -= 5;
+				scalar.h -= 5;
+				break;
+			case SDLK_p:
+				scalar.w += 5;
+				scalar.h += 5;
 				break;
 			}
 		}

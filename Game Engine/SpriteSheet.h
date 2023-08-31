@@ -12,6 +12,7 @@ public:
 	~SpriteSheet();
 	void select_sprite(int x, int y);
 	void render(int x, int y);
+	void render(int x, int y, SDL_Rect* scalar);
 	int getWidth();
 	int getHeight();
 private:

@@ -26,7 +26,7 @@ bool LTexture::loadFromFile(std::string path)
 
 	//Load image at specified path
 	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
-	if (loadedSurface == NULL)
+	if (loadedSurface == nullptr)
 	{
 		std::cout << "Unable to load image %s! SDL_image Error: %s\n" << path.c_str() << IMG_GetError();
 	}
@@ -37,7 +37,7 @@ bool LTexture::loadFromFile(std::string path)
 
 		//Create texture from surface pixels
 		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-		if (newTexture == NULL)
+		if (newTexture == nullptr)
 		{
 			std::cout << "Unable to create texture from %s! SDL Error: %s\n" << path.c_str() << SDL_GetError();
 		}
@@ -95,7 +95,7 @@ bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor
 #endif
 
 void LTexture::free()
-{	
+{
 	//Free texture if it exists
 	if (mTexture != nullptr)
 	{
@@ -130,7 +130,7 @@ void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cen
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
 
 	//Set clip rendering dimensions
-	if (clip != NULL)
+	if (clip != nullptr)
 	{
 		renderQuad.w = clip->w;
 		renderQuad.h = clip->h;
@@ -138,6 +138,16 @@ void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cen
 
 	//Render to screen
 	SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center, flip);
+}
+
+void LTexture::renderScaled(int x, int y, SDL_Rect* clip, SDL_Rect* destRect, double angle, SDL_Point* center, SDL_RendererFlip flip)
+{
+	if (destRect != nullptr)
+	{
+		destRect->x = x;
+		destRect->y = y;
+	}
+	SDL_RenderCopyEx(gRenderer, mTexture, clip, destRect, angle, center, flip);
 }
 
 int LTexture::getWidth()

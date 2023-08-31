@@ -12,7 +12,7 @@ SDL_Renderer* gRenderer;
 LWindow::LWindow()
 {
 	//Initialize non-existant window
-	mWindow = NULL;
+	mWindow = nullptr;
 	mMouseFocus = false;
 	mKeyboardFocus = false;
 	mFullScreen = false;
@@ -25,14 +25,14 @@ bool LWindow::init()
 {
 	//Create window
 	mWindow = SDL_CreateWindow("Game Engine", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-	if (mWindow != NULL)
+	if (mWindow != nullptr)
 	{
 		mMouseFocus = true;
 		mKeyboardFocus = true;
 		mWidth = SCREEN_WIDTH;
 		mHeight = SCREEN_HEIGHT;
 	}
-	return mWindow != NULL;
+	return mWindow != nullptr;
 }
 
 SDL_Renderer* LWindow::createRenderer()

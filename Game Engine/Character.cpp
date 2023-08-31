@@ -190,4 +190,11 @@ void Character::render(int x, int y)
 	mCharaSpriteSheet->render(x, y);
 }
 
+void Character::render(SDL_Rect* scalar)
+{
+	CHARA_WIDTH = scalar->w;
+	CHARA_HEIGHT = scalar->h;
+	shiftColliders();
+	mCharaSpriteSheet->render(mPosX, mPosY, scalar);
+}
 #endif // !CHARACTER_CPP

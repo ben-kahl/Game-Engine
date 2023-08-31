@@ -28,6 +28,8 @@ public:
 	void render();
 	//Renders character based on camera
 	void render(int x, int y);
+	//Render with scale
+	void render(SDL_Rect* scalar);
 	//render with alt color
 	//void render(Uint8 r, Uint8 g, Uint8 b);
 

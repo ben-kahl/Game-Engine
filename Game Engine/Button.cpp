@@ -65,10 +65,11 @@ void Button::handleEvent(SDL_Event& e)
 
 			case SDL_MOUSEBUTTONDOWN:
 				mButtonSpriteSheet->select_sprite(0, 2);
+				application.gameState = GameState::StageSelect;
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-				mButtonSpriteSheet->select_sprite(0, 0);
+				mButtonSpriteSheet->select_sprite(0, 3);
 				break;
 			}
 		}
