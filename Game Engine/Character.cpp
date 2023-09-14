@@ -8,6 +8,7 @@ Character::Character(int x, int y, SpriteSheet* charaSpriteSheet)
 	CHARA_HEIGHT = charaSpriteSheet->getHeight();
 	mPosX = x;
 	mPosY = y;
+	frame = 0;
 	//initialize with one collision box, set to the dimensions of the character
 	mColliders.resize(1);
 	mColliders[0].w = CHARA_WIDTH;
@@ -24,6 +25,7 @@ Character::Character()
 	CHARA_HEIGHT = 0;
 	mPosX = 0;
 	mPosY = 0;
+	frame = 0;
 	//initialize with one collision box, set to the dimensions of the character
 	mColliders.resize(1);
 	mColliders[0].w = CHARA_WIDTH;
@@ -32,7 +34,7 @@ Character::Character()
 
 	//Set Character Texture
 	mCharaSpriteSheet = nullptr;
-	
+
 }
 
 Character::~Character()
@@ -126,6 +128,20 @@ bool Character::checkCollision(std::vector<SDL_Rect>& a)
 void Character::move(std::vector<SDL_Rect>& otherCharaColliders)
 {
 	mPosX += mVelX;
+	if (mVelX < 0)
+	{
+		frame++;
+		if (frame / 4 >= 1)
+		{
+			frame = 0;
+		}
+	}
+	else
+	{
+		frame = 0;
+	}
+
+	mCharaSpriteSheet->select_sprite(frame, 0);
 	shiftColliders();
 	//If the character went too far to the left or right
 	if ((mPosX < 0) || (mPosX + CHARA_WIDTH > SCREEN_WIDTH) || checkCollision(otherCharaColliders))
@@ -177,6 +193,11 @@ int Character::getPosX()
 int Character::getPosY()
 {
 	return mPosY;
+}
+
+void Character::setPos(int x, int y) {
+	mPosX = x;
+	mPosY = y;
 }
 
 void Character::render()

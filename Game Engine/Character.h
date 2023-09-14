@@ -40,6 +40,9 @@ public:
 	int getPosX();
 	int getPosY();
 	std::vector<SDL_Rect>& getColliders();
+
+	//Setter
+	void setPos(int x, int y);
 private:
 	//X and Y offsets
 	int mPosX, mPosY;
@@ -47,6 +50,9 @@ private:
 	//Velocity of character
 	int mVelX, mVelY;
 
+	//Current frame
+	int frame;
+	
 	//Character Texture
 	SpriteSheet* mCharaSpriteSheet;
 

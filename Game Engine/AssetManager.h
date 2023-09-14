@@ -11,6 +11,7 @@
 #include "SpriteSheet.h"
 #include "Character.h"
 #include "Button.h"
+#include "HealthBar.h"
 
 //Load new 
 //LTexture* loadMedia(std::string path);
@@ -22,7 +23,7 @@ public:
 	~AssetManager();
 	
 	bool loadFont(std::string path, int size);
-
+	
 	bool initAssets();
 
 	TTF_Font* font;
@@ -35,7 +36,11 @@ public:
 
 	std::vector<Button> buttons;
 	
+	std::vector<HealthBar> healthBars;
+
 	LTexture fontTexture;
+
+	LTexture roundTimerTexture;
 
 private:
 	LTexture titleTexture;
@@ -49,6 +54,8 @@ private:
 	LTexture p1Texture;
 
 	LTexture buttonTexture;
+
+	LTexture dotTexture;
 };
 
 #endif // !ASSET_MANAGER_H

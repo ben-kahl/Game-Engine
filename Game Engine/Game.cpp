@@ -7,6 +7,12 @@ LTimer fpsTimer;
 
 LTimer gameTimer;
 
+LTimer roundTimer;
+
+std::stringstream roundTimerText;
+
+int roundTime;
+
 std::stringstream timeText;
 
 int countedFrames;
@@ -31,6 +37,8 @@ void initGame()
 	//Set text color as white
 	textColor = { 255, 255, 255, 255 };
 
+	roundTime = 0;
+
 	//Start counting frames per second
 	countedFrames = 0;
 	fpsTimer.start();
@@ -39,7 +47,7 @@ void initGame()
 	//Render camera
 	camera = { 0,0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	application.gameState = GameState::Title;
-	scalar = { 0, 0, 20, 20 };
+	scalar = { 0, 0, 64, 205 };
 }
 
 void update(AssetManager* assets)
@@ -59,11 +67,13 @@ void update(AssetManager* assets)
 		break;
 	case GameState::CharacterSelect:
 		assets->levels[CharacterSelect].render();
+		assets->healthBars[0].setPercent(0.1);
 		//gCharaSelBackgroundTexture.render(0, 0);
 		break;
 	case GameState::StageSelect:
 		//gStageSelBackgroundTexture.render(0, 0);
 		assets->levels[StageSelect].render();
+		assets->healthBars[0].setPercent(0.5);
 		break;
 	case GameState::Fight:
 		//Character stuff
@@ -94,6 +104,20 @@ void update(AssetManager* assets)
 		//Render dots
 		assets->characters[0].render(&scalar);
 		assets->characters[1].render();
+
+		//Render round clock
+		roundTime = roundTimer.getTicks() / 1000;
+		roundTimerText.str("");
+		roundTimerText << 99 - roundTime;
+		assets->roundTimerTexture.loadFromRenderedText(roundTimerText.str().c_str(), textColor, assets->font);
+		assets->roundTimerTexture.render(920, 20);
+		//Render health bars
+		assets->healthBars[0].render();
+		assets->healthBars[1].render();
+		if (roundTime - 99 == 0)
+		{
+			application.gameState = Title;
+		}
 		break;
 	}
 
@@ -129,6 +153,8 @@ void gameLoop(AssetManager* assets)
 			case SDLK_LEFT: application.gameState = GameState::Title;
 				break;
 			case SDLK_RIGHT: application.gameState = GameState::Fight;
+				assets->characters[0].setPos(assets->levels[3].getLevW() / 3, assets->levels[3].getLevH() / 1.4);
+				roundTimer.start();
 				break;
 			case SDLK_UP: application.gameState = GameState::StageSelect;
 				break;
@@ -144,10 +170,16 @@ void gameLoop(AssetManager* assets)
 				break;
 			}
 		}
-		//handle character input
-		assets->characters[0].handleEvent(e);
-		//Handle button
-		assets->buttons[0].handleEvent(e);
+		if (application.gameState == GameState::Fight)
+		{
+			//handle character input
+			assets->characters[0].handleEvent(e);
+		}
+		if (application.gameState == GameState::Title)
+		{
+			//Handle button
+			assets->buttons[0].handleEvent(e);
+		}
 		//handle window events (dont really need this atm)
 		application.win.handleEvent(e);
 	}
